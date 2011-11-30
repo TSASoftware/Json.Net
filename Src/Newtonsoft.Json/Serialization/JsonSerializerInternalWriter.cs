@@ -347,6 +347,10 @@ namespace Newtonsoft.Json.Serialization
                         // TODO: Retrieve the type from the property, and not the value.
                         //JsonContract memberContract = GetContractSafe(memberValue);
                         var memberContract = Serializer.ContractResolver.ResolveContract(property.PropertyType);
+
+                        if (memberValue != null)
+                            memberContract = Serializer.ContractResolver.ResolveContract(memberValue.GetType());
+
                         WriteMemberInfoProperty(writer, memberValue, property, memberContract);
                     }
                 }
@@ -445,7 +449,11 @@ namespace Newtonsoft.Json.Serialization
 
                     // Note: So apparently the type of the items in the list are being retrieved already in the childValuesContract.  Check to see
                     // if the type here is correct, and check to see if the contract retrieved here is the same as the childValuesContract.
-                    JsonContract valueContract = Serializer.ContractResolver.ResolveContract(childValuesContract.UnderlyingType ?? typeof(object)); 
+                    JsonContract valueContract = childValuesContract;
+ 
+                    if(value !=  null)
+                        valueContract = Serializer.ContractResolver.ResolveContract(value.GetType());
+ 
                     //JsonContract valueContract = GetContractSafe(value);
 
                     if (ShouldWriteReference(value, null, valueContract))
@@ -614,14 +622,15 @@ namespace Newtonsoft.Json.Serialization
 
                 try
                 {
-
-
                     object value = entry.Value;
 
                     // Note: So apprently the type of the value item in the dictionary is already being retrieved in the childValuesContract.
                     // Check to see if the childValuesContract is the same as the one retrieved here.
-                    JsonContract valueContract = Serializer.ContractResolver.ResolveContract(childValuesContract.UnderlyingType ?? typeof(object));
-                    //JsonContract valueContract = GetContractSafe(value);
+
+                    JsonContract valueContract = childValuesContract;
+
+                    if(value != null)
+                        valueContract = Serializer.ContractResolver.ResolveContract(value.GetType());
 
                     if (ShouldWriteReference(value, null, valueContract))
                     {
