@@ -36,7 +36,7 @@ using System.Text.RegularExpressions;
 
 namespace Newtonsoft.Json.Utilities
 {
-  internal static class ReflectionUtils
+  public static class ReflectionUtils
   {
     public static bool IsVirtual(this PropertyInfo propertyInfo)
     {
